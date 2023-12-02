@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useState } from "react";
+import {Link} from "react-router-dom";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 import styled from "styled-components";
@@ -13,9 +14,8 @@ function InputFireBase() {
 
     function  SubmitFireBase (event){
       
-      event.preventDefault(); // Corrected spelling
+      event.preventDefault();
 
-console.log('come');
         const datas ={
             FristName,
             lastName,
@@ -80,6 +80,12 @@ console.log('come');
       >
         Send it to me
       </Button>
+
+      <Link to="/UsersInDB">
+  <Button variant="outlined" size="medium" className="ShowDB">
+    show DB 
+  </Button>
+</Link>
     </IputItems>
   );
 }
@@ -87,7 +93,14 @@ console.log('come');
 export default InputFireBase;
 
 const IputItems = styled.form`
+margin-top: 20%;
+
   .Input {
+  
     margin-bottom: 10%;
+  }
+  .ShowDB{
+    margin-left: 14.5rem;
+
   }
 `;
