@@ -34,9 +34,9 @@ function GetUsers() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [FristName, setFirstName] = useState("");
-  const [lastName, setlastName] = useState("");
-  const [email, setemail] = useState("");
+  const [Title, setTitle] = useState("");
+  const [Date, setDate] = useState("");
+  const [Status, setStatus] = useState("");
   const [useridentication, setuseridentication] = useState("");
   useEffect(() => {
     const fetchData = async () => {
@@ -45,32 +45,59 @@ function GetUsers() {
           "https://fir-75f9a-default-rtdb.firebaseio.com/Users.json"
         );
         const data = await response.json();
-        setusers(Object.entries(data));
+  
+        if (data && typeof data === 'object') {
+          // More than one user
+          setusers(Object.entries(data));
+        } else if (Array.isArray(data) && data.length === 1) {
+          // Only one user
+          setusers([data]);
+        } else {
+          // Empty or unexpected data
+          setusers([]);
+        }
+  
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
-
+  
     fetchData();
   }, [refresh]);
-
+  
   const RemoveHandler = async (userId) => {
-    await fetch(
-      `https://fir-75f9a-default-rtdb.firebaseio.com/Users/${userId}.json`,
-      {
-        method: "DELETE",
+    try {
+      const response = await fetch(
+        `https://fir-75f9a-default-rtdb.firebaseio.com/Users/${userId}.json`,
+        {
+          method: "DELETE",
+        }
+      );
+  
+      if (response.ok) {
+        console.log("User deleted successfully");
+  
+        // Use a callback function with setrefresh to ensure correct order of state updates
+        setrefresh((prev) => !prev, () => {
+          // This code will run after the state has been updated
+          console.log("Refreshed");
+        });
+      } else {
+        console.error(`Failed to delete user. Status: ${response.status}`);
       }
-    ).then((response) => console.log(response));
-    setrefresh((prev) => !prev);
+    } catch (error) {
+      console.error("Error deleting user:", error);
+    }
   };
-
+  
+  
   const EditHandler = async () => {
     console.log(useridentication, "useridentication");
 
     const datas = {
-      FristName,
-      lastName,
-      email,
+        Title,
+      Date,
+      Status,
     };
     await fetch(
       `https://fir-75f9a-default-rtdb.firebaseio.com/Users/${useridentication}.json`,
@@ -89,9 +116,9 @@ function GetUsers() {
         <Table sx={{ minWidth: 650 }} aria-label="simple table">
           <TableHead>
             <TableRow>
-              <TableCell>First Name</TableCell>
-              <TableCell align="center">Last Name</TableCell>
-              <TableCell align="center">Email</TableCell>
+              <TableCell>Title</TableCell>
+              <TableCell align="center">Date</TableCell>
+              <TableCell align="center">Status</TableCell>
               <TableCell> Options </TableCell>
             </TableRow>
           </TableHead>
@@ -99,10 +126,10 @@ function GetUsers() {
             {users.map((user) => (
               <TableRow>
                 <TableCell component="th" scope="row">
-                  {user[1].FristName}
+                  {user[1].Title}
                 </TableCell>
-                <TableCell align="center">{user[1].lastName}</TableCell>
-                <TableCell align="center">{user[1].email}</TableCell>
+                <TableCell align="center">{user[1].Date}</TableCell>
+                <TableCell align="center">{user[1].Status}</TableCell>
                 <TableCell>
                   <DeleteIcon
                     onClick={() => {
@@ -136,18 +163,18 @@ function GetUsers() {
       >
         <Box sx={style}>
           <Typography id="modal-modal-title" variant="h6" component="h2">
-            Text in a modal
+            Yoho you want to edit infos !
           </Typography>
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
             <IputItems>
               <Box sx={{ width: 500, maxWidth: "100%" }}>
                 <TextField
                   fullWidth
-                  label="FristName"
+                  label={Title}
                   id="fullWidth"
                   className="Input"
-                  value={FristName}
-                  onChange={(event) => setFirstName(event.target.value)}
+                  value={Title}
+                  onChange={(event) => setTitle(event.target.value)}
                 />
               </Box>
               <Box
@@ -158,11 +185,11 @@ function GetUsers() {
               >
                 <TextField
                   fullWidth
-                  label="LasteName"
+                  label="Date"
                   id="fullWidth"
                   className="Input"
-                  value={lastName}
-                  onChange={(event) => setlastName(event.target.value)}
+                  value={Date}
+                  onChange={(event) => setDate(event.target.value)}
                 />
               </Box>
               <Box
@@ -173,11 +200,11 @@ function GetUsers() {
               >
                 <TextField
                   fullWidth
-                  label="Email"
+                  label="Status"
                   id="fullWidth"
                   className="Input"
-                  value={email}
-                  onChange={(event) => setemail(event.target.value)}
+                  value={Status}
+                  onChange={(event) => setStatus(event.target.value)}
                 />
               </Box>
             </IputItems>
