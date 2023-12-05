@@ -8,18 +8,18 @@ import Button from "@mui/material/Button";
 import SendIcon from "@mui/icons-material/Send";
 
 function InputFireBase() {
-    const [FristName , setFirstName] = useState('')
-    const [lastName , setlastName] = useState('')
-    const [email , setemail] = useState('')
+    const [Title , setTitle] = useState('')
+    const [Date , setDate] = useState('')
+    const [Status , setStatus] = useState('')
 
     function  SubmitFireBase (event){
       
       event.preventDefault();
 
         const datas ={
-            FristName,
-            lastName,
-            email
+          Title,
+          Date,
+          Status
         }
         fetch('https://fir-75f9a-default-rtdb.firebaseio.com/Users.json ', {
             method :'POST',
@@ -30,14 +30,15 @@ function InputFireBase() {
     
   return (
     <IputItems  onSubmit={SubmitFireBase}>
+      <h1 className='status'>welcome To your TODO LIST</h1>
       <Box sx={{ width: 500, maxWidth: "100%" }}>
         <TextField
           fullWidth
-          label="FristName"
+          label="Title"
           id="fullWidth"
           className="Input"
-          value={FristName}
-          onChange={(event)=>setFirstName(event.target.value)}
+          value={Title}
+          onChange={(event)=>setTitle(event.target.value)}
         />
       </Box>
       <Box
@@ -48,11 +49,11 @@ function InputFireBase() {
       >
         <TextField
           fullWidth
-          label="LasteName"
+          label="Date"
           id="fullWidth"
           className="Input"
-          value={lastName}
-          onChange={(event)=>setlastName(event.target.value)}
+          value={Date}
+          onChange={(event)=>setDate(event.target.value)}
         />
       </Box>
       <Box
@@ -63,11 +64,11 @@ function InputFireBase() {
       >
         <TextField 
         fullWidth 
-        label="Email" 
+        label="Status" 
         id="fullWidth" 
         className="Input"  
-        value={email}
-        onChange={(event)=>setemail(event.target.value)}
+        value={Status}
+        onChange={(event)=>setStatus(event.target.value)}
         />
         
 
@@ -93,8 +94,15 @@ function InputFireBase() {
 export default InputFireBase;
 
 const IputItems = styled.form`
-margin-top: 20%;
 
+margin-top: 10%;
+.status{
+  align-items: center;
+  justify-content: center;
+  display: flex;
+  margin-bottom: 10%;
+
+}
   .Input {
   
     margin-bottom: 10%;
